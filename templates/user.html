@@ -1,0 +1,49 @@
+{% extends "template.html" %}
+
+{% block content %}
+    <h1>Welcome, {{ user.username }}!</h1>
+
+    {% if user.name == "admin" %}
+        <p>You are an admin!</p>
+    {% endif %}
+        <form action="/user" method="POST">
+            <label for="displayName">Name:</label>
+            {% if name =="admin"%}
+            <input type="text"  id="displayName" name="displayName" value= "{{name}}" >
+
+            {% else %}
+
+            <input type="text"  id="displayName" name="displayName" value= "{{name}}"  readonly>
+            {% endif %}
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" value="{{ user.username }}" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" onkeyup='check();' required>
+
+            <label for="confirm_password">Confirm Password:</label>
+            <input type="password" id="confirm_password" name="confirm_password" onkeyup='check();' required >
+            <span id="password_error" style="color: red;"></span>
+            <button type="submit" id="formButton">Insert</button>
+        </form>
+
+    <script>
+        let valid = false;
+        document.getElementById('formButton').disabled = !valid;
+
+        var check = function() {
+            valid = document.getElementById('password').value ==
+            document.getElementById('confirm_password').value
+        if (valid) {
+            document.getElementById('password_error').style.color = 'green';
+            document.getElementById('password_error').innerHTML = 'matching';
+        } else {
+            document.getElementById('password_error').style.color = 'red';
+            document.getElementById('password_error').innerHTML = 'not matching';
+        }
+        document.getElementById('formButton').disabled = !valid;
+    }
+    </script>
+    
+{% endblock %}

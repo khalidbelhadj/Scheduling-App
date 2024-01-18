@@ -1,0 +1,40 @@
+{% extends "template.html" %}
+
+{% block content %}
+<!-- Your content goes here -->
+
+<h2>Availability for Week {{week}} (Starting {{date}})</h2>
+<form action="/schedule/{{week}}" method="POST">
+    <table>
+        <thead>
+            <tr>
+                <th></th>
+                <th>Monday</th>
+                <th>Tuesday</th>
+                <th>Wednesday</th>
+                <th>Thursday</th>
+                <th>Friday</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+           {% for i in range(9, 20) %}
+                {% for j in range(2)%}
+                <tr>
+                    <td>{{ i }}:{{j*3}}0</td>
+                    {% for day in days %}
+                    <td><input type="checkbox" name={{ day }} value="{{ i }}:{{ j*3 }}0" id="Week{{week}}-{{day}}-{{i}}:{{j*3}}0"></td>
+                    {% endfor %}
+
+                </tr>
+                {% endfor %}
+            {% endfor %}
+        </tbody>
+    </table>
+    <input type="submit" value="Submit">
+</form>
+
+<script>
+</script>
+
+{% endblock %}
