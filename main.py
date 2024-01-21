@@ -158,7 +158,6 @@ def user():
     if request.method == 'GET':
         if 'username' in session:
             name,user = get_user_and_name(users)
-            print(name)
 
             return render_template('user.html', user=user, name=name)
 
