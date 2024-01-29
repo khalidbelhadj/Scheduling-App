@@ -12,13 +12,12 @@ load_dotenv()
 
 ADMIN_PASS = os.getenv("ADMIN_PASS")
 # Dummy user database
-dummy_users = [
-    {
+dummy_users = [{
         'name': 'admin',
         'username': 'admin',
         'password': generate_password_hash(ADMIN_PASS)
-    }
-]
+    }]
+
 
 days = list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])
 dates = [
@@ -51,7 +50,8 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        name,user = next(((name, user) for (name, user) in users.items() if username == user['username']), None)
+        for user in users:
+            print(user)
         if user and check_password_hash(user['password'], password):
             session['username'] = username  # Store the username in the session
             return redirect(url_for('dashboard'))
@@ -143,7 +143,6 @@ def user():
         name = request.form.get('displayName')
         username = request.form.get('username')
         password = request.form.get('password')
-        print(request.form)
         users[name] = {
             "username": username,
             "password": generate_password_hash(password)}
@@ -165,7 +164,7 @@ def user():
 
 
 def get_user_and_name(users):
-    return next(((name, user) for (name, user) in users.items() if user['username'] == session['username']), None)
+    return next(((user["name"], user["username"]) for user in users if user['username'] == session['username']), None)
 
 
 if __name__ == '__main__':
