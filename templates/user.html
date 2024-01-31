@@ -1,6 +1,7 @@
 {% extends "user_template.html" %}
 
 {% block content %}
+<div>
     <h1>Welcome, {{ user }}!</h1>
 
     {% if name == "admin" %}
@@ -37,7 +38,7 @@
             <span id="password_error" style="color: red;"></span>
             <button type="submit" id="formButton">Insert</button>
         </form>
-
+</div>
     <script>
         let valid = false;
         document.getElementById('formButton').disabled = !valid;
@@ -55,5 +56,5 @@
         document.getElementById('formButton').disabled = !valid;
     }
     </script>
-    
+
 {% endblock %}

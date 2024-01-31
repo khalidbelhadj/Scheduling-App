@@ -189,7 +189,7 @@ def user():
         if 'username' in session:
             name,user = get_user_and_name(users)
             print(user)
-            return render_template('user.html', user=user, name=name)
+            return render_template('user.html', user=user, name=name, week=0)
 
     return redirect(url_for('login'))
 
