@@ -1,11 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Template</title>
-    {% block head %}{% endblock %}
+
+    {% block head %}
+    <title>{% block title %}{%endblock title%}- AutoFold Scheduling</title>
+    {% endblock %}
 </head>
+
+<style>
+    body {
+        font-family: sans-serif;
+    }
+    h1 {
+        text-align: center;
+    }
+</style>
 <body>
-    <h1>Welcome to my template!</h1>
+    <h1>Welcome!! Enter your availability for possible group meetups</h1>
     
     <!-- Your content goes here -->
     {% block content %}{% endblock %}

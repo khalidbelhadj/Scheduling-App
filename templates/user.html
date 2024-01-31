@@ -1,9 +1,9 @@
-{% extends "template.html" %}
+{% extends "user_template.html" %}
 
 {% block content %}
-    <h1>Welcome, {{ user.username }}!</h1>
+    <h1>Welcome, {{ user }}!</h1>
 
-    {% if user.name == "admin" %}
+    {% if name == "admin" %}
         <p>You are an admin!</p>
     {% endif %}
         <form action="/user" method="POST">
@@ -24,6 +24,16 @@
 
             <label for="confirm_password">Confirm Password:</label>
             <input type="password" id="confirm_password" name="confirm_password" onkeyup='check();' required >
+
+            <label for="team">Team</label>
+            <select name="team" id="team">
+                <option value="Folding">Folding</option>
+                <option value="Loading">Loading</option>
+
+            </select>
+
+            <label for="colour">Colour</label>
+            <input type="color" id="colour" name="colour", value="#1d1d1d" />
             <span id="password_error" style="color: red;"></span>
             <button type="submit" id="formButton">Insert</button>
         </form>

@@ -1,18 +1,13 @@
-{% extends "template.html" %}
+{% extends "user_template.html" %}
 {% block head %}
 <style>
-    .flex-container {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-    }
 
 
 
     .scheduleContainer {
         display:grid;
         grid-template-areas: "empty toprow" "content content";
+
     }
 
     .toprow {
@@ -23,6 +18,7 @@
         justify-content: space-around;
         grid-template-columns: repeat(6, 1fr);
     }
+
 
     .day {
         width: auto;
@@ -40,7 +36,8 @@
     .time-slot{
         width:auto;
         display:flex;
-        flex-direction:column
+        flex-direction:column;
+        border-top: 1px solid black;
     }
 
     .day-schedule{
@@ -63,20 +60,69 @@
           grid-column-gap: 1em;
 
     }
+
+    .week-nav{
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-around;
+
+    }
+
+    ul{
+     text-decoration:none;
+        list-style-type:none;
+    }
+
+    .Folding{
+        background-color: #738adb
+    }
+
+    .Loading{
+        background-color: #db738a
+    }
+
+    .name-slot{
+        display:flex;
+        flex-direction:row;
+        justify-content:space-between;
+        align-items:center;
+        padding:0.5vw;
+        border-radius: 0.5vw;
+        margin:0.5vw;
+        overflow:hidden;
+    }
+
+    .name-slot .name{
+        margin-right:0.5vw;
+        width:90%;
+        height:100%;
+
+    }
+    .name-slot .colour{
+        width:10%;
+        height:100%
+    }
 </style>
 {% endblock %}
+{% block title %} Dashboard {% endblock %}
+
 {% block content %}
-<div class="flex-container">
-    <nav>
-        <ul>
-            <li><a href="{{url_for('user')}}">Edit Profile</a></li>
-            <li><a href="{{url_for('schedule', week=1)}}">Edit Availability</a></li>
-            <li><a href={{url_for("logout")}}>Logout</a></li>
-        </ul>
-    </nav>
+
     <div class="user">
         <h2>{{user["username"]}}</h2>
          <h3>Schedule</h3>
+
+        <div>
+            <h3>Change Availability</h3>
+            <ul class="week-nav">
+            {% for i in range(1, 10) %}
+                <li><a href="{{url_for('dashboard',week=i-1)}}">Week {{i}}</a></li>
+            {% endfor %}
+            </ul>
+        </div>
+
+
         <div class = "scheduleContainer">
             <div style="grid-area:empty"></div>
             <div class="toprow">
@@ -99,16 +145,25 @@
                          </div>
                         {% for day in days %}
                         <div class="time-slot">
-                            {% for (name, availability) in schedule%}
+                            {%if schedule["availability"] is defined %}
+                                {% for person in schedule["availability"]%}
+                                    {% for (name,availability) in person.items()%}
 
-                                {% if time in availability[day] %}
-                                    <div class="name-slot">
-                                       {{name}}
-                                    </div>
+                                        {% if time in availability[day] %}
+                                            {% set current = get_user(name) %}
+                                            <div class="name-slot"  >
+                                                <div class="name {{current['team']}}">{{name}}</div>
+
+                                                <div class="colour" style="background-color:{{current['colour']}}">.
+                                                </div>
+                                            </div>
 
 
-                                {% endif %}
-                            {% endfor %}
+
+                                        {% endif %}
+                                    {% endfor %}
+                                {%endfor %}
+                            {% endif %}
                         </div>
                         {%endfor %}
                     {% endfor %}
@@ -132,6 +187,6 @@
 
         </div>
     </div>
-</div>
+
 
 {% endblock %}

@@ -26,12 +26,28 @@ dates = [
     "2024-01-29",
     "2024-02-05",
     "2024-02-12",
+    "2024-02-19",
     "2024-02-26",
     "2024-03-04",
     "2024-03-11",
     "2024-03-18",
     "2024-03-25",
     "2024-04-01"
+]
+
+titles= [
+    "Week 1",
+    "Week 2",
+    "Week 3",
+    "Week 4",
+    "Week 5",
+    "Flexible Learning Week",
+    "Week 6",
+    "Week 7",
+    "Week 8",
+    "Week 9",
+    "Week 10",
+    "Week 11",
 ]
 
 # Home route to redirect to login if not logged in
@@ -51,10 +67,10 @@ def login():
         password = request.form.get('password')
 
         for user in users:
-            print(user)
-        if user and check_password_hash(user['password'], password):
-            session['username'] = username  # Store the username in the session
-            return redirect(url_for('dashboard'))
+            if username in (user["name"],user["username"]) and check_password_hash(user['password'], password):
+                session["name"] = username
+                session['username'] = username  # Store the username in the session
+                return redirect(url_for('dashboard'))
         else:
             return redirect(url_for('login'))
     return render_template('login.html')
@@ -67,8 +83,8 @@ def logout():
 
 #Dashboard route
 @app.route('/dashboard')
-
-def dashboard():
+@app.route("/dashboard/<int:week>")
+def dashboard(week=0):
     users = get_users()
 
     try:
@@ -79,18 +95,24 @@ def dashboard():
 
     if 'username' in session:
         name,user = get_user_and_name(users)
-
-        return render_template('schedule.html', user=user, days=days, schedule=[*schedule["Week 1 (2024-01-15)"].items()], dates=dates)
+        print(schedule[0])
+        return render_template('schedule.html', user=user, days=days, schedule=schedule[week], dates=dates, week=week, get_user=get_user)
 
     else:
         return redirect(url_for('login'))
 
+def get_user(name):
+    users = get_users()
+    return next((user for user in users if name in (user["name"],user["username"])), None)
 
 def get_users():
     try:
         with open('data/users.json') as f:
             users = json.load(f)
     except:
+        users = dummy_users
+
+    if not users:
         users = dummy_users
     return users
 
@@ -102,7 +124,7 @@ def schedule(week):
         with open('data/schedule.json') as f:
             schedule = json.load(f)
     except:
-        schedule = {}
+        schedule = [{"date":date,"title":title, "availability":[]} for date,title in zip(dates,titles)]
 
     users = get_users()
 
@@ -113,13 +135,9 @@ def schedule(week):
                 availability[day] = []
             availability[day].append(time)
         if 'username' in session:
-            week_string = f"Week {week} ({dates[week-1]})"
-
-            if week_string not in schedule:
-                schedule[week_string] = {}
-            current_week = schedule[week_string]
+            current_week = schedule[week-1]
             name, user = get_user_and_name(users)
-            current_week[name] = availability
+            current_week["availability"].append({name:availability})
             with open('data/schedule.json', 'w') as f:
                 json.dump(schedule, f)
             
@@ -133,19 +151,32 @@ def schedule(week):
 @app.route('/user', methods=["GET","POST",'PUT'])
 def user():
     # Creating a new user
-    try:
-        with open('data/users.json') as f:
-            users = json.load(f)
-    except:
-        users = {}
-
+    users = get_users()
     if request.method == 'POST':
         name = request.form.get('displayName')
         username = request.form.get('username')
         password = request.form.get('password')
-        users[name] = {
+        team = request.form.get('team')
+        colour = request.form.get("colour")
+
+        delete_user = False
+        pos = 0
+        for (index,user) in enumerate(users):
+            if user["name"] == name:
+                delete_user = True
+                pos = index
+        if delete_user:
+            users.pop(pos)
+
+
+        users.append({
+            "name": name,
             "username": username,
-            "password": generate_password_hash(password)}
+            "password": generate_password_hash(password),
+            "team": team,
+            "colour": colour
+        }
+        )
 
         with open('data/users.json', 'w') as f:
             json.dump(users, f)
@@ -157,15 +188,18 @@ def user():
     if request.method == 'GET':
         if 'username' in session:
             name,user = get_user_and_name(users)
-
+            print(user)
             return render_template('user.html', user=user, name=name)
 
     return redirect(url_for('login'))
 
 
 def get_user_and_name(users):
-    return next(((user["name"], user["username"]) for user in users if user['username'] == session['username']), None)
+    return next(((user["name"], user["username"]) for user in users if session['username'] in (user["name"],user["username"])), None)
 
+def set_session(user):
+    session["name"] = user["name"]
+    session["username"] = user["username"]
 
 if __name__ == '__main__':
     app.run(debug=True)

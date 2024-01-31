@@ -1,0 +1,49 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+
+    {% block head %}
+    <title>{% block title %}{%endblock title%}- AutoFold Scheduling</title>
+    {% endblock %}
+</head>
+
+<style>
+    body {
+        font-family: sans-serif;
+    }
+    h1 {
+        text-align: center;
+    }
+    .flex-container {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    nav{
+        width:20%;
+    }
+</style>
+<body>
+    <h1>Welcome!! Enter your availability for possible group meetups</h1>
+
+    <!-- Your content goes here -->
+
+
+    <div class="flex-container">
+        <nav>
+            <ul>
+                <li><a href="{{url_for('user')}}">Edit Profile</a></li>
+                <li><a href="{{url_for('schedule', week=week)}}">Edit Availability</a></li>
+                <li><a href={{url_for("logout")}}>Logout</a></li>
+            </ul>
+        </nav>
+    {% block content %}
+
+    {% endblock %}
+
+
+</div>
+</body>
+</html>
