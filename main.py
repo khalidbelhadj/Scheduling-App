@@ -80,7 +80,7 @@ def dashboard():
     if 'username' in session:
         name,user = get_user_and_name(users)
 
-        return render_template('schedule.html', user=user, days=days, schedule=schedule, dates=dates)
+        return render_template('schedule.html', user=user, days=days, schedule=[*schedule["Week 1 (2024-01-15)"].items()], dates=dates)
 
     else:
         return redirect(url_for('login'))

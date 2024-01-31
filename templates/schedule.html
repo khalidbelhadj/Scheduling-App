@@ -39,10 +39,8 @@
 
     .time-slot{
         width:auto;
-        background-color: #f1f1f1;
-    }
-
-    .name{
+        display:flex;
+        flex-direction:column
     }
 
     .day-schedule{
@@ -90,26 +88,45 @@
 
             </div>
             <div class="content">
-                {% for (name,availability) in schedule["Week 1 (2024-01-15)"].items() %}
-                <div class="name">
-                    <div> {{name}}</div>
-                </div>
-                    {% for day in days %}
-                        <div class="{{day}}">
-                            {% if availability[day] %}
-                                {%for time in availability[day]%}
-                                <div class="time-slot">{{time}}</div>
 
-                            {%endfor%}
-                        {%endif%}
+
+                {% for i in range(9, 20) %}
+                    {% for j in range(2)%}
+                        {% set time = i ~ ":" ~ j*3 ~ "0" %}
+                        <div class="time-column">
+                            {{time}}
+
+                         </div>
+                        {% for day in days %}
+                        <div class="time-slot">
+                            {% for (name, availability) in schedule%}
+
+                                {% if time in availability[day] %}
+                                    <div class="name-slot">
+                                       {{name}}
+                                    </div>
+
+
+                                {% endif %}
+                            {% endfor %}
                         </div>
+                        {%endfor %}
                     {% endfor %}
 
+                {% endfor %}
 
-
-            {%endfor %}
 
             </div>
+
+
+
+
+
+
+
+
+
+
 
 
 
