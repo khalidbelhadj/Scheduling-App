@@ -88,7 +88,7 @@ def dashboard(week=0):
     users = get_users()
 
     try:
-        with open('data/schedule.json') as f:
+        with open('tmp/schedule.json') as f:
             schedule = json.load(f)
     except:
         schedule = {}
@@ -107,7 +107,7 @@ def get_user(name):
 
 def get_users():
     try:
-        with open('data/users.json') as f:
+        with open('tmp/users.json') as f:
             users = json.load(f)
     except:
         users = dummy_users
@@ -121,7 +121,7 @@ def get_users():
 
 def schedule(week):
     try:
-        with open('data/schedule.json') as f:
+        with open('tmp/schedule.json') as f:
             schedule = json.load(f)
     except:
         schedule = [{"date":date,"title":title, "availability":[]} for date,title in zip(dates,titles)]
@@ -138,7 +138,7 @@ def schedule(week):
             current_week = schedule[week-1]
             name, user = get_user_and_name(users)
             current_week["availability"].append({name:availability})
-            with open('data/schedule.json', 'w') as f:
+            with open('tmp/schedule.json', 'w') as f:
                 json.dump(schedule, f)
             
             return redirect(url_for('dashboard'))
