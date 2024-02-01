@@ -20,10 +20,11 @@
 
            {% for i in range(9, 20) %}
                 {% for j in range(2)%}
+                {% set time = i ~ ":" ~ j*3 ~ "0" %}
                 <tr>
                     <td>{{ i }}:{{j*3}}0</td>
                     {% for day in days %}
-                    <td><input type="checkbox" name={{ day }} value="{{ i }}:{{ j*3 }}0" id="Week{{week}}-{{day}}-{{i}}:{{j*3}}0"></td>
+                    <td><input type="checkbox" name={{ day }} value="{{time}}" id="Week{{week}}-{{day}}-{{time}}" {% if time in availability[day] %} checked {%endif%}></td>
                     {% endfor %}
 
                 </tr>
