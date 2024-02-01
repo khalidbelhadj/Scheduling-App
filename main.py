@@ -11,6 +11,7 @@ import os
 from dotenv import load_dotenv
 from configparser import ConfigParser
 import datetime
+from urllib.parse import urlparse
 load_dotenv()
 
 app = Flask(__name__)
@@ -66,21 +67,15 @@ def load_config(filename='database.ini', section='postgresql'):
     parser.read(filename)
 
     # get section, default to postgresql
-    config = {}
-    config['host'] = os.environ['POSTGRES_HOST']
-    config['database'] = os.environ['POSTGRES_DATABASE']
-    config['user'] = os.environ['POSTGRES_USER']
-    config['password'] = os.environ['POSTGRES_PASSWORD']
-
-    config["URL"] = os.environ["POSTGRES_URL"]
-
-    if parser.has_section(section):
-        params = parser.items(section)
-        for param in params:
-            config[param[0]] = param[1]
-
-    else:
-        raise Exception('Section {0} not found in the {1} file'.format(section, filename))
+    conStr = os.getenv("POSTGRES_URL")
+    p = urlparse(conStr)
+    config = {
+        'dbname': "verceldb",
+        'user': p.username,
+        'password': p.password,
+        'port': p.port,
+        'host': p.hostname
+    }
 
     return config
 # Connect to the PostgreSQL database
@@ -197,7 +192,7 @@ def schedule(week):
         else:
             return redirect(url_for('login'))
 
-    return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week+1, date=dates[week], availability = availability)
+    return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability)
 
 
 def find_user_availability(schedule, week):

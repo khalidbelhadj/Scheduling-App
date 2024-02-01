@@ -3,7 +3,7 @@
 {% block content %}
 <!-- Your content goes here -->
 <div>
-<h2>Availability for Week {{week}} (Starting {{date}})</h2>
+<h2>Availability for Week {{week + 1}} (Starting {{date}})</h2>
 <form action="/schedule/{{week}}" method="POST">
     <table>
         <thead>
