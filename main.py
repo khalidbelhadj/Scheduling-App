@@ -298,4 +298,4 @@ if __name__ == '__main__':
 
         conn.commit()
 
-    app.run(debug=True)
+    app.run()
