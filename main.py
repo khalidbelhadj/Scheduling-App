@@ -95,7 +95,7 @@ def connect_db(config):
 @app.route('/')
 def home():
     if 'username' in session:
-        return jsonify({'message': 'You are logged in as ' + session['username']})
+        return redirect(url_for('dashboard'))
     else:
         return redirect(url_for('login'))
 
