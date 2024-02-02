@@ -144,8 +144,10 @@ def dashboard(week=0):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
+        conn.close()
         return render_template('schedule.html', user=user, days=days, schedule=schedule[week], dates=dates, week=week, get_user=get_user)
     else:
+        conn.close()
         return redirect(url_for('login'))
 
 @app.route('/schedule/<int:week>', methods=["GET", "POST", "PUT"])
@@ -187,11 +189,12 @@ def schedule(week):
             current_week["availability"].append({name: availability})
             cur.execute("UPDATE schedule SET schedule = %s WHERE id = 1", (json.dumps(schedule),))
             conn.commit()
-
+            conn.close()
             return redirect(url_for('dashboard'))
         else:
+            conn.close()
             return redirect(url_for('login'))
-
+    conn.close()
     return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability)
 
 
@@ -237,17 +240,18 @@ def user():
 
         cur.execute("UPDATE users SET users = %s WHERE id = 1", (json.dumps(users),))
 
-        conn.commit()
-
         if session["username"] != "admin":
             session["username"] = username
 
         conn.commit()
+        conn.close()
         return redirect(url_for('dashboard'))
 
+    conn.close()
     if request.method == 'GET':
         if 'username' in session:
             name, user = get_user_and_name(users)
+
             return render_template('user.html', user=user, name=name, week=0)
 
     return redirect(url_for('login'))
@@ -299,5 +303,5 @@ if __name__ == '__main__':
             cur.execute("INSERT INTO users (id, users) VALUES (1, %s)", (json.dumps(dummy_users),))
 
         conn.commit()
-
+    conn.close()
     app.run()
