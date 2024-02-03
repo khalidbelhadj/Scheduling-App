@@ -17,6 +17,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'secret key'
 
+conn = None
+
 
 # Dummy user database
 dummy_users = [{
@@ -128,10 +130,9 @@ def logout():
 def dashboard(week=0):
     users = get_users()
     config=load_config()
-    conn = connect_db(config)
+    if conn is None:
+        raise Exception("No database connection")
     cur = conn.cursor()
-    if week == 0:
-        week = get_current_week() -1
 
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
@@ -144,18 +145,16 @@ def dashboard(week=0):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
-        conn.close()
         return render_template('schedule.html', user=user, days=days, schedule=schedule[week], dates=dates, week=week, get_user=get_user)
     else:
-        conn.close()
         return redirect(url_for('login'))
 
 @app.route('/schedule/<int:week>', methods=["GET", "POST", "PUT"])
 def schedule(week):
     users = get_users()
     config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
+    if conn is None:
+        raise Exception("No database connection")
 
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
@@ -189,12 +188,9 @@ def schedule(week):
             current_week["availability"].append({name: availability})
             cur.execute("UPDATE schedule SET schedule = %s WHERE id = 1", (json.dumps(schedule),))
             conn.commit()
-            conn.close()
             return redirect(url_for('dashboard'))
         else:
-            conn.close()
             return redirect(url_for('login'))
-    conn.close()
     return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability)
 
 
@@ -244,10 +240,8 @@ def user():
             session["username"] = username
 
         conn.commit()
-        conn.close()
         return redirect(url_for('dashboard'))
 
-    conn.close()
     if request.method == 'GET':
         if 'username' in session:
             name, user = get_user_and_name(users)
@@ -261,15 +255,14 @@ def get_user_and_name(users):
 
 def get_users():
     config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
+    if conn is None:
+        raise Exception("No database connection")
 
     cur.execute("SELECT users FROM users WHERE id = 1")
     users = cur.fetchone()[0]
     if not users:
         users = dummy_users
 
-    conn.close()
     return users
 
 def get_user(name):
@@ -303,5 +296,4 @@ if __name__ == '__main__':
             cur.execute("INSERT INTO users (id, users) VALUES (1, %s)", (json.dumps(dummy_users),))
 
         conn.commit()
-    conn.close()
-    app.run()
+    app.run(debug=True, port=8080)
