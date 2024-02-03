@@ -13,6 +13,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'secret key'
 
+conn = None
+
 
 # Dummy user database
 dummy_users = [{
@@ -126,9 +128,6 @@ def logout():
 @app.route("/dashboard/<int:week>")
 def dashboard(week=0):
     users = get_users()
-    cur = conn.cursor()
-    if week == 0:
-        week = get_current_week() -1
 
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
@@ -280,4 +279,6 @@ if __name__ == '__main__':
             cur.execute("INSERT INTO users (id, users) VALUES (1, %s)", (json.dumps(dummy_users),))
 
         conn.commit()
-    app.run(debug=True)
+
+    app.run(debug=True, port=8080)
+

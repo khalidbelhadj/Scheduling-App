@@ -9,16 +9,20 @@
 
 {% block content %}
 <!-- Your login form code here -->
-<div style="display:flex; justify-content:center">
-<form action="" method="post">
-    <label for="username">Username:</label>
-    <input type="text" id="username" name="username" required><br><br>
-    
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br><br>
-    
+<div style="display:flex; justify-content:center;">
+  <form style="border-radius: 5px; padding: 10px; display: flex; flex-direction: column; box-shadow: 0 0 2px #181818; gap: 20px;" method="post">
+    <div style="display: flex; flex-direction: column;">
+      <label for="username">Username</label>
+      <input style="outline-radius: 1px; " type="text" id="username" name="username" required>
+    </div>
+  
+    <div style="display: flex; flex-direction: column;">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    </div>
+  
     <input type="submit" value="Login">
-</form>
+  </form>
 </div>
 
 {% endblock %}
