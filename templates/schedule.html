@@ -116,14 +116,15 @@
     <div style="grid-area:empty"></div>
     <div class="toprow">
       <div> </div>
-      {% for day in days %}
-      <div class="day"> {{ day }} </div>
-
-      {% endfor %}
 
     </div>
     <div class="content">
+         <div class="time-column"></div>
+{% for day in days %}
 
+      <div class="time-slot"> {{ day }} </div>
+
+      {% endfor %}
 
       {% for i in range(9, 20) %}
       {% for j in range(2)%}
@@ -140,7 +141,7 @@
 
         {% if time in availability[day] %}
         {% set current = get_user(name) %}
-        <div class="name-slot"  >
+        <div class="name-slot">
           <div class="name {{current['team']}}">{{name}}</div>
 
           <div class="colour" style="background-color:{{current['colour']}}">.
