@@ -1,13 +1,13 @@
 {% extends "user_template.html" %}
 
 {% block content %}
-<div>
-    <h1>Welcome, {{ user }}!</h1>
+<main>
+    <h1>{{ user }}'s Account</h1>
 
     {% if name == "admin" %}
         <p>You are an admin!</p>
     {% endif %}
-        <form action="/user" method="POST">
+        <form style="display: flex; flex-direction: column;" action="/user" method="POST">
             <label for="displayName">Name:</label>
             {% if name =="admin"%}
             <input type="text"  id="displayName" name="displayName" value= "{{name}}" >
@@ -38,7 +38,7 @@
             <span id="password_error" style="color: red;"></span>
             <button type="submit" id="formButton">Insert</button>
         </form>
-</div>
+</main>
     <script>
         let valid = false;
         document.getElementById('formButton').disabled = !valid;

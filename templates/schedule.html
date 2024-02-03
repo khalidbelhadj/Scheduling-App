@@ -4,190 +4,161 @@
 
 
 
-    .scheduleContainer {
-        display:grid;
-        grid-template-areas: "empty toprow" "content content";
+.scheduleContainer {
+  display:grid;
+  grid-template-areas: "empty toprow" "content content";
 
-    }
+}
 
-    .toprow {
-        grid-area: toprow;
-        display: grid;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-        grid-template-columns: repeat(6, 1fr);
-    }
-
-
-    .day {
-        width: auto;
-        background-color: #f1f1f1;
-        padding:1vw
-    }
-
-    .times {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-    }
-
-    .time-slot{
-        width:auto;
-        display:flex;
-        flex-direction:column;
-        border-top: 1px solid black;
-    }
-
-    .day-schedule{
-
-        display: grid;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
-
-    }
+.toprow {
+  grid-area: toprow;
+  display: grid;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  grid-template-columns: repeat(6, 1fr);
+}
 
 
+.day {
+  width: auto;
+  background-color: #f1f1f1;
+  padding:1vw
+}
 
-    .content{
-        grid-area: content;
-        display:grid;
-        grid-template-columns: repeat(6, 1fr);
-          grid-auto-flow: row;
-          grid-row-gap: .5em;
-          grid-column-gap: 1em;
+.times {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
 
-    }
+.time-slot{
+  width:auto;
+  display:flex;
+  flex-direction:column;
+  border-top: 1px solid black;
+}
 
-    .week-nav{
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-around;
+.day-schedule{
 
-    }
+  display: grid;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
 
-    ul{
-     text-decoration:none;
-        list-style-type:none;
-    }
+}
 
-    .Folding{
-        background-color: #738adb
-    }
 
-    .Loading{
-        background-color: #db738a
-    }
 
-    .name-slot{
-        display:flex;
-        flex-direction:row;
-        justify-content:space-between;
-        align-items:center;
-        padding:0.5vw;
-        border-radius: 0.5vw;
-        margin:0.5vw;
-        overflow:hidden;
-    }
+.content{
+  grid-area: content;
+  display:grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-flow: row;
+  grid-row-gap: .5em;
+  grid-column-gap: 1em;
 
-    .name-slot .name{
-        margin-right:0.5vw;
-        width:90%;
-        height:100%;
+}
 
-    }
-    .name-slot .colour{
-        width:10%;
-        height:100%
-    }
+.week-nav{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.Folding{
+  background-color: #738adb
+}
+
+.Loading{
+  background-color: #db738a
+}
+
+.name-slot{
+  display:flex;
+  flex-direction:row;
+  justify-content:space-between;
+  align-items:center;
+  padding:0.5vw;
+  border-radius: 0.5vw;
+  margin:0.5vw;
+  overflow:hidden;
+}
+
+.name-slot .name{
+  margin-right:0.5vw;
+  width:90%;
+  height:100%;
+
+}
+.name-slot .colour{
+  width:10%;
+  height:100%
+}
+.user {
+  flex-grow: 1;
+}
+
 </style>
 {% endblock %}
 {% block title %} Dashboard {% endblock title %}
 
 {% block content %}
 
-    <div class="user">
-        <h2>{{user["username"]}}</h2>
-         <h3>Schedule</h3>
 
-        <div>
-            <h3>Change Availability</h3>
-            <ul class="week-nav">
-            {% for i in range(1, 10) %}
-                <li><a href="{{url_for('dashboard',week=i-1)}}">Week {{i}}</a></li>
-            {% endfor %}
-            </ul>
-        </div>
+<main class="user">
+  <h2>{{user["username"]}}</h2>
+  <h1>Schedule for {{constants.titles[week]}} ({{constants.dates[week]}})</h1>
 
+  <div class = "scheduleContainer">
+    <div style="grid-area:empty"></div>
+    <div class="toprow">
+      <div> </div>
 
-        <div class = "scheduleContainer">
-            <div style="grid-area:empty"></div>
-            <div class="toprow">
-                <div> </div>
-                {% for day in days %}
-                <div class="day"> {{ day }} </div>
-
-                {% endfor %}
-
-            </div>
-            <div class="content">
-
-
-                {% for i in range(9, 20) %}
-                    {% for j in range(2)%}
-                        {% set time = i ~ ":" ~ j*3 ~ "0" %}
-                        <div class="time-column">
-                            {{time}}
-
-                         </div>
-                        {% for day in days %}
-                        <div class="time-slot">
-                            {%if schedule["availability"] is defined %}
-                                {% for person in schedule["availability"]　%}
-                                    {% for (name,availability) in person.items()%}
-
-
-                                        {% if time in availability[day] %}
-                                            {% set current = get_user(name) %}
-                                            <div class="name-slot"  >
-                                                <div class="name {{current['team']}}">{{name}}</div>
-
-                                                <div class="colour" style="background-color:{{current['colour']}}">.
-                                                </div>
-                                            </div>
-
-
-
-                                        {% endif %}
-                                    {% endfor %}
-                                {%endfor %}
-                            {% endif %}
-                        </div>
-                        {%endfor %}
-                    {% endfor %}
-
-                {% endfor %}
-
-
-            </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-        </div>
     </div>
+    <div class="content">
+         <div class="time-column"></div>
+    {% for day in constants.days %}
+
+      <div class="time-slot"> {{ day }} </div>
+
+      {% endfor %}
+
+      {% for i in range(9, 20) %}
+      {% for j in range(2)%}
+      {% set time = i ~ ":" ~ j*3 ~ "0" %}
+      <div class="time-column">
+        {{time}}
+
+      </div>
+      {% for day in constants.days %}
+      <div class="time-slot">
+        {%if schedule["availability"] is defined %}
+        {% for person in schedule["availability"]%}
+        {% for (name,availability) in person.items()%}
+
+        {% if time in availability[day] %}
+        {% set current = get_user(name) %}
+        <div class="name-slot">
+          <div class="name {{current['team']}}">{{name}}</div>
+
+          <div class="colour" style="background-color:{{current['colour']}}">.
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {%endfor %}
+        {% endif %}
+      </div>
+      {%endfor %}
+      {% endfor %}
+
+      {% endfor %}
+    </div>
+  </div>
+</main>
 
 
 {% endblock %}
