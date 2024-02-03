@@ -1,11 +1,7 @@
-
-
-
 # Load dotenv
-from dotenv import load_dotenv
 import json
 import psycopg2
-from flask import Flask, request, jsonify, redirect, url_for, session, render_template
+from flask import Flask, request, redirect, url_for, session, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
@@ -58,6 +54,8 @@ titles = [
     "Week 11",
 ]
 
+
+
 app = Flask(__name__)
 app.secret_key = 'secret key'
 
@@ -89,9 +87,10 @@ def connect_db(config):
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
 
-# Dummy user database
 
-
+config=load_config()
+conn = connect_db(config)
+cur = conn.cursor()
 
 # Home route to redirect to login if not logged in
 @app.route('/')
@@ -129,10 +128,6 @@ def logout():
 @app.route("/dashboard/<int:week>")
 def dashboard(week=0):
     users = get_users()
-    config=load_config()
-    if conn is None:
-        raise Exception("No database connection")
-    cur = conn.cursor()
 
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
@@ -152,9 +147,6 @@ def dashboard(week=0):
 @app.route('/schedule/<int:week>', methods=["GET", "POST", "PUT"])
 def schedule(week):
     users = get_users()
-    config=load_config()
-    if conn is None:
-        raise Exception("No database connection")
 
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
@@ -207,9 +199,6 @@ def find_user_availability(schedule, week):
 def user():
     # Creating a new user
     users = get_users()
-    config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
     if request.method == 'POST':
         name = request.form.get('displayName')
         username = request.form.get('username')
@@ -254,10 +243,6 @@ def get_user_and_name(users):
     return next(((user["name"], user["username"]) for user in users if session['username'] in (user["name"], user["username"])), None)
 
 def get_users():
-    config=load_config()
-    if conn is None:
-        raise Exception("No database connection")
-
     cur.execute("SELECT users FROM users WHERE id = 1")
     users = cur.fetchone()[0]
     if not users:
@@ -277,8 +262,6 @@ def get_current_week():
     return -1
 
 if __name__ == '__main__':
-    config = load_config()
-    conn = connect_db(config)
     if conn is not None:
         cur = conn.cursor()
 
@@ -296,4 +279,6 @@ if __name__ == '__main__':
             cur.execute("INSERT INTO users (id, users) VALUES (1, %s)", (json.dumps(dummy_users),))
 
         conn.commit()
+
     app.run(debug=True, port=8080)
+
