@@ -98,9 +98,9 @@
                 <ul class="week-nav2">
                 {% for i in range(0, 11) %}
                   {% if i==week %}
-                    <li class="nav-link" style="background: #e4e4e4;"><a href="{{url_for('dashboard',week=i-1)}}">{{constants.titles[i]}}</a></li>
+                    <li class="nav-link" style="background: #e4e4e4;"><a href="{{url_for('dashboard',week=i)}}">{{constants.titles[i]}}</a></li>
                   {% else %}
-                    <li class="nav-link"><a href="{{url_for('dashboard',week=i-1)}}">{{constants.titles[i]}}</a></li>
+                    <li class="nav-link"><a href="{{url_for('dashboard',week=i)}}">{{constants.titles[i]}}</a></li>
                   {% endif %}
                 {% endfor %}
                 </ul>
