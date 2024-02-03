@@ -1,11 +1,7 @@
-
-
-
 # Load dotenv
-from dotenv import load_dotenv
 import json
 import psycopg2
-from flask import Flask, request, jsonify, redirect, url_for, session, render_template
+from flask import Flask, request, redirect, url_for, session, render_template
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from dotenv import load_dotenv
@@ -56,6 +52,8 @@ titles = [
     "Week 11",
 ]
 
+
+
 app = Flask(__name__)
 app.secret_key = 'secret key'
 
@@ -87,9 +85,10 @@ def connect_db(config):
     except (psycopg2.DatabaseError, Exception) as error:
         print(error)
 
-# Dummy user database
 
-
+config=load_config()
+conn = connect_db(config)
+cur = conn.cursor()
 
 # Home route to redirect to login if not logged in
 @app.route('/')
@@ -127,9 +126,6 @@ def logout():
 @app.route("/dashboard/<int:week>")
 def dashboard(week=0):
     users = get_users()
-    config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
     if week == 0:
         week = get_current_week() -1
 
@@ -144,18 +140,13 @@ def dashboard(week=0):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
-        conn.close()
         return render_template('schedule.html', user=user, days=days, schedule=schedule[week], dates=dates, week=week, get_user=get_user)
     else:
-        conn.close()
         return redirect(url_for('login'))
 
 @app.route('/schedule/<int:week>', methods=["GET", "POST", "PUT"])
 def schedule(week):
     users = get_users()
-    config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
 
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
@@ -189,12 +180,9 @@ def schedule(week):
             current_week["availability"].append({name: availability})
             cur.execute("UPDATE schedule SET schedule = %s WHERE id = 1", (json.dumps(schedule),))
             conn.commit()
-            conn.close()
             return redirect(url_for('dashboard'))
         else:
-            conn.close()
             return redirect(url_for('login'))
-    conn.close()
     return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability)
 
 
@@ -211,9 +199,6 @@ def find_user_availability(schedule, week):
 def user():
     # Creating a new user
     users = get_users()
-    config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
     if request.method == 'POST':
         name = request.form.get('displayName')
         username = request.form.get('username')
@@ -244,10 +229,8 @@ def user():
             session["username"] = username
 
         conn.commit()
-        conn.close()
         return redirect(url_for('dashboard'))
 
-    conn.close()
     if request.method == 'GET':
         if 'username' in session:
             name, user = get_user_and_name(users)
@@ -260,16 +243,11 @@ def get_user_and_name(users):
     return next(((user["name"], user["username"]) for user in users if session['username'] in (user["name"], user["username"])), None)
 
 def get_users():
-    config=load_config()
-    conn = connect_db(config)
-    cur = conn.cursor()
-
     cur.execute("SELECT users FROM users WHERE id = 1")
     users = cur.fetchone()[0]
     if not users:
         users = dummy_users
 
-    conn.close()
     return users
 
 def get_user(name):
@@ -284,8 +262,6 @@ def get_current_week():
     return -1
 
 if __name__ == '__main__':
-    config = load_config()
-    conn = connect_db(config)
     if conn is not None:
         cur = conn.cursor()
 
@@ -303,5 +279,6 @@ if __name__ == '__main__':
             cur.execute("INSERT INTO users (id, users) VALUES (1, %s)", (json.dumps(dummy_users),))
 
         conn.commit()
-    conn.close()
-    app.run()
+    app.run(debug=True)
+
+conn.close()

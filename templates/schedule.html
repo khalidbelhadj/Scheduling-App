@@ -146,8 +146,9 @@
                         {% for day in days %}
                         <div class="time-slot">
                             {%if schedule["availability"] is defined %}
-                                {% for person in schedule["availability"]%}
+                                {% for person in schedule["availability"]　%}
                                     {% for (name,availability) in person.items()%}
+
 
                                         {% if time in availability[day] %}
                                             {% set current = get_user(name) %}
