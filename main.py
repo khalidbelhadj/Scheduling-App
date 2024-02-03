@@ -126,9 +126,10 @@ def logout():
 # Dashboard route
 @app.route('/dashboard')
 @app.route("/dashboard/<int:week>")
-def dashboard(week=0):
+def dashboard(week=-1):
     users = get_users()
-
+    if week == -1:
+        week = get_current_week()
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
         schedule = cur.fetchone()[0]
