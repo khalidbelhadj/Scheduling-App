@@ -120,7 +120,7 @@
     </div>
     <div class="content">
          <div class="time-column"></div>
-{% for day in days %}
+    {% for day in constants.days %}
 
       <div class="time-slot"> {{ day }} </div>
 
@@ -133,7 +133,7 @@
         {{time}}
 
       </div>
-      {% for day in days %}
+      {% for day in constants.days %}
       <div class="time-slot">
         {%if schedule["availability"] is defined %}
         {% for person in schedule["availability"]%}

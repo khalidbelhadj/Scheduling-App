@@ -96,11 +96,11 @@
           <div>{{user}}</div></div>
             <div>
                 <ul class="week-nav2">
-                {% for i in range(1, 10) %}
-                  {% if i==week+1 %}
-                    <li class="nav-link" style="background: #e4e4e4;"><a href="{{url_for('dashboard',week=i-1)}}">Week {{i}}</a></li>
+                {% for i in range(0, 11) %}
+                  {% if i==week %}
+                    <li class="nav-link" style="background: #e4e4e4;"><a href="{{url_for('dashboard',week=i-1)}}">{{constants.titles[i]}}</a></li>
                   {% else %}
-                    <li class="nav-link"><a href="{{url_for('dashboard',week=i-1)}}">Week {{i}}</a></li>
+                    <li class="nav-link"><a href="{{url_for('dashboard',week=i-1)}}">{{constants.titles[i]}}</a></li>
                   {% endif %}
                 {% endfor %}
                 </ul>

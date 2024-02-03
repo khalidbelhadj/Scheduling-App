@@ -54,7 +54,7 @@ titles = [
     "Week 11",
 ]
 
-
+constants = {"days": days, "dates": dates, "titles": titles}
 
 app = Flask(__name__)
 app.secret_key = 'secret key'
@@ -140,7 +140,7 @@ def dashboard(week=0):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
-        return render_template('schedule.html', user=user, days=days, schedule=schedule[week], dates=dates, week=week, get_user=get_user)
+        return render_template('schedule.html', user=user, schedule=schedule[week], constants = constants, week=week, get_user=get_user)
     else:
         return redirect(url_for('login'))
 
@@ -183,7 +183,7 @@ def schedule(week):
             return redirect(url_for('dashboard'))
         else:
             return redirect(url_for('login'))
-    return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability)
+    return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability, constants = constants)
 
 
 def find_user_availability(schedule, week):
@@ -235,7 +235,7 @@ def user():
         if 'username' in session:
             name, user = get_user_and_name(users)
 
-            return render_template('user.html', user=user, name=name, week=0)
+            return render_template('user.html', user=user, name=name, week=get_current_week(), constants = constants)
 
     return redirect(url_for('login'))
 
