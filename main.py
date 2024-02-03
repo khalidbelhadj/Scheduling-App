@@ -126,6 +126,7 @@ def logout():
 @app.route("/dashboard/<int:week>")
 def dashboard(week=0):
     users = get_users()
+    cur = conn.cursor()
     if week == 0:
         week = get_current_week() -1
 
@@ -280,5 +281,3 @@ if __name__ == '__main__':
 
         conn.commit()
     app.run(debug=True)
-
-conn.close()
