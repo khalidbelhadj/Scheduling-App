@@ -256,7 +256,7 @@ def get_user(name):
     return next((user for user in users if name in (user["name"], user["username"])), None)
 
 def get_current_week():
-    today = datetime.date(2024, 2, 4)
+    today = datetime.date.today()
     for i, date in enumerate(dates):
         if today < datetime.datetime.strptime(date, "%Y-%m-%d").date():
             return i
