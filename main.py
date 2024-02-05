@@ -130,6 +130,7 @@ def dashboard(week=-1):
     users = get_users()
     if week == -1:
         week = get_current_week()
+        week -= 1
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
         schedule = cur.fetchone()[0]
