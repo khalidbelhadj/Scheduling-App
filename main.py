@@ -141,7 +141,7 @@ def dashboard(week=-1):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
-        return render_template('schedule.html', user=user, schedule=schedule[week], constants = constants, week=week, get_user=get_user)
+        return render_template('schedule.html', user=user, schedule=schedule[week], constants = constants, week=week, users=users,get_user=get_user)
     else:
         return redirect(url_for('login'))
 
@@ -245,10 +245,12 @@ def get_user_and_name(users):
 
 def get_users():
     cur.execute("SELECT users FROM users WHERE id = 1")
-    users = cur.fetchone()[0]
+    try:
+        users = cur.fetchone()[0]
+    except TypeError:
+        users = None
     if not users:
         users = dummy_users
-
     return users
 
 def get_user(name):

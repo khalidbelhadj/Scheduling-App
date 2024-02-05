@@ -10,14 +10,6 @@
 
 }
 
-.toprow {
-  grid-area: toprow;
-  display: grid;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  grid-template-columns: repeat(6, 1fr);
-}
 
 
 .day {
@@ -102,6 +94,81 @@
 }
 
 </style>
+
+<script>
+  const CONSTANTS = {{ constants|tojson }};
+  const AVAILABILITY = {{ schedule["availability"]|tojson }};
+  const USERS = {{ users|tojson }};
+
+  function addTimeColumn(item){
+    const content = document.getElementById("content");
+    const timeColumn = document.createElement("div");
+    timeColumn.classList.add("time-column");
+    timeColumn.innerText = item;
+    content.appendChild(timeColumn);
+    console.log("Hello")
+  }
+
+  function get_user(name){
+    for (let user of USERS){
+      if (user["username"] === name){
+        return user;
+      }
+    }
+  }
+
+  window.onload = function(){ 
+    const content = document.getElementById("content");
+
+    addTimeColumn("")
+    for (let day of CONSTANTS.days){
+      const dayColumn = document.createElement("div");
+      dayColumn.classList.add("time-slot");
+      dayColumn.innerText = day;
+      content.appendChild(dayColumn);
+    }
+    for (let i=9; i<20; i++){
+      for (let j=0; j<2; j++){
+        const time = i + ":" + j*3 + "0";
+        addTimeColumn(time);
+        for (let day of CONSTANTS.days){
+          const timeSlot = document.createElement("div");
+          timeSlot.classList.add("time-slot");
+          console.log("time slot")
+          
+          for (let person of AVAILABILITY){
+            data = []
+            Object.entries(person).forEach(element => {
+              data.push(element)
+            })
+            const name = data[0][0];
+            const availability = data[0][1];
+            if (availability[day] !== undefined && availability[day].includes(time)){
+              const current = get_user(name);
+              const nameSlot = document.createElement("div");
+              nameSlot.classList.add("name-slot");
+              const nameDiv = document.createElement("div");
+              nameDiv.classList.add("name");
+              nameDiv.innerText = name;
+              nameDiv.classList.add(current["team"]);
+              const colourDiv = document.createElement("div");
+              colourDiv.classList.add("colour");
+              colourDiv.style.backgroundColor = current["colour"];
+              nameSlot.appendChild(nameDiv);
+              nameSlot.appendChild(colourDiv);
+              timeSlot.appendChild(nameSlot);
+            }
+
+          
+        }
+        content.appendChild(timeSlot);
+          console.log("Append")
+      }
+    }
+  }
+}
+
+</script>
 {% endblock %}
 {% block title %} Dashboard {% endblock title %}
 
@@ -118,44 +185,7 @@
       <div> </div>
 
     </div>
-    <div class="content">
-         <div class="time-column"></div>
-    {% for day in constants.days %}
-
-      <div class="time-slot"> {{ day }} </div>
-
-      {% endfor %}
-
-      {% for i in range(9, 20) %}
-      {% for j in range(2)%}
-      {% set time = i ~ ":" ~ j*3 ~ "0" %}
-      <div class="time-column">
-        {{time}}
-
-      </div>
-      {% for day in constants.days %}
-      <div class="time-slot">
-        {%if schedule["availability"] is defined %}
-        {% for person in schedule["availability"]%}
-        {% for (name,availability) in person.items()%}
-
-        {% if time in availability[day] %}
-        {% set current = get_user(name) %}
-        <div class="name-slot">
-          <div class="name {{current['team']}}">{{name}}</div>
-
-          <div class="colour" style="background-color:{{current['colour']}}">.
-          </div>
-        </div>
-        {% endif %}
-        {% endfor %}
-        {%endfor %}
-        {% endif %}
-      </div>
-      {%endfor %}
-      {% endfor %}
-
-      {% endfor %}
+    <div class="content" id="content">
     </div>
   </div>
 </main>
