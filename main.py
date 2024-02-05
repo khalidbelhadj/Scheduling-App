@@ -13,6 +13,8 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = 'secret key'
 
+conn = None
+
 
 # Dummy user database
 dummy_users = [{
@@ -52,7 +54,7 @@ titles = [
     "Week 11",
 ]
 
-
+constants = {"days": days, "dates": dates, "titles": titles}
 
 app = Flask(__name__)
 app.secret_key = 'secret key'
@@ -124,12 +126,11 @@ def logout():
 # Dashboard route
 @app.route('/dashboard')
 @app.route("/dashboard/<int:week>")
-def dashboard(week=0):
+def dashboard(week=-1):
     users = get_users()
-    cur = conn.cursor()
-    if week == 0:
-        week = get_current_week() -1
-
+    if week == -1:
+        week = get_current_week()
+        week -= 1
     try:
         cur.execute("SELECT schedule FROM schedule WHERE id = 1")
         schedule = cur.fetchone()[0]
@@ -141,7 +142,7 @@ def dashboard(week=0):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
-        return render_template('schedule.html', user=user, days=days, schedule=schedule[week], dates=dates, week=week, get_user=get_user)
+        return render_template('schedule.html', user=user, schedule=schedule[week], constants = constants, week=week, users=users,get_user=get_user)
     else:
         return redirect(url_for('login'))
 
@@ -184,7 +185,7 @@ def schedule(week):
             return redirect(url_for('dashboard'))
         else:
             return redirect(url_for('login'))
-    return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability)
+    return render_template('availability.html', days=list(["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]), week=week, date=dates[week], availability = availability, constants = constants)
 
 
 def find_user_availability(schedule, week):
@@ -236,7 +237,7 @@ def user():
         if 'username' in session:
             name, user = get_user_and_name(users)
 
-            return render_template('user.html', user=user, name=name, week=0)
+            return render_template('user.html', user=user, name=name, week=get_current_week(), constants = constants)
 
     return redirect(url_for('login'))
 
@@ -245,10 +246,12 @@ def get_user_and_name(users):
 
 def get_users():
     cur.execute("SELECT users FROM users WHERE id = 1")
-    users = cur.fetchone()[0]
+    try:
+        users = cur.fetchone()[0]
+    except TypeError:
+        users = None
     if not users:
         users = dummy_users
-
     return users
 
 def get_user(name):
@@ -256,7 +259,7 @@ def get_user(name):
     return next((user for user in users if name in (user["name"], user["username"])), None)
 
 def get_current_week():
-    today = datetime.date(2024, 2, 4)
+    today = datetime.date.today()
     for i, date in enumerate(dates):
         if today < datetime.datetime.strptime(date, "%Y-%m-%d").date():
             return i
@@ -280,4 +283,6 @@ if __name__ == '__main__':
             cur.execute("INSERT INTO users (id, users) VALUES (1, %s)", (json.dumps(dummy_users),))
 
         conn.commit()
-    app.run(debug=True)
+
+    app.run(debug=True, port=8080)
+

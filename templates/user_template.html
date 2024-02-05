@@ -9,41 +9,126 @@
 </head>
 
 <style>
+
     body {
         font-family: sans-serif;
+        margin: 0;
     }
-    h1 {
-        text-align: center;
-    }
+
     .flex-container {
         display: flex;
         flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: center;
+        width: 100%;
+        gap: 10px;
+        min-height: 100vh;
     }
-    nav{
-        width:20%;
+
+    nav {
+      width: 20rem;
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 0 2px #181818;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 10px;
+      max-height: calc(100vh - 40px);
     }
+    
+    ul {
+      text-decoration:none;
+      list-style-type:none;
+      padding: 0;
+      margin: auto 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .nav-link { 
+      padding: 5px 8px 5px 8px;
+      border-radius: 5px;
+      box-shadow: 0 0 2px #181818;
+    }
+
+    .nav-link:hover { 
+      background: #f2f2f2;
+    }
+
+     a {
+      text-decoration: none;
+      color: #000;
+      width: 100%;
+      display: block;
+    }
+
+    #name {
+      border-radius: 5px;
+      box-shadow: 0 0 2px #181818;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 8px 5px 8px;
+    }
+    
+    .week-nav2 {
+      display: flex;
+      flex-direction: column;
+    }
+
+    #nav-list > li {
+      display: flex;
+      align-items: center;
+      flex-direction: row;
+      gap: 8px;
+    }
+
 </style>
 <body>
-    <h1>Welcome!! Enter your availability for possible group meetups</h1>
+    <!-- <h1>Welcome!! Enter your availability for possible group meetups</h1> -->
 
     <!-- Your content goes here -->
-
-
     <div class="flex-container">
         <nav>
-            <ul>
-                <li><a href="{{url_for('user')}}">Edit Profile</a></li>
-                <li><a href="{{url_for('schedule', week=week)}}">Edit Availability</a></li>
-                <li><a href={{url_for("logout")}}>Logout</a></li>
+
+            <div id="name">
+<?xml version="1.0" encoding="UTF-8"?><svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M4.271 18.3457C4.271 18.3457 6.50002 15.5 12 15.5C17.5 15.5 19.7291 18.3457 19.7291 18.3457" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12 12C13.6569 12 15 10.6569 15 9C15 7.34315 13.6569 6 12 6C10.3431 6 9 7.34315 9 9C9 10.6569 10.3431 12 12 12Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <div>{{user}}</div></div>
+            <div>
+                <ul class="week-nav2">
+                {% for i in range(0, 11) %}
+                  {% if i==week %}
+                    <li class="nav-link" style="background: #e4e4e4;"><a href="{{url_for('dashboard',week=i)}}">{{constants.titles[i]}}</a></li>
+                  {% else %}
+                    <li class="nav-link"><a href="{{url_for('dashboard',week=i)}}">{{constants.titles[i]}}</a></li>
+                  {% endif %}
+                {% endfor %}
+                </ul>
+            </div>
+            <ul id="nav-list">
+                <li class="nav-link">
+<?xml version="1.0" encoding="UTF-8"?><svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M15 4V2M15 4V6M15 4H10.5M3 10V19C3 20.1046 3.89543 21 5 21H19C20.1046 21 21 20.1046 21 19V10H3Z" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 10V6C3 4.89543 3.89543 4 5 4H7" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 2V6" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 10V6C21 4.89543 20.1046 4 19 4H18.5" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a href="{{url_for('dashboard')}}">
+            <div>Dashboard</div>
+          </a></li>
+                <li class="nav-link">
+<?xml version="1.0" encoding="UTF-8"?><svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M3 21L12 21H21" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M12.2218 5.82839L15.0503 2.99996L20 7.94971L17.1716 10.7781M12.2218 5.82839L6.61522 11.435C6.42769 11.6225 6.32233 11.8769 6.32233 12.1421L6.32233 16.6776L10.8579 16.6776C11.1231 16.6776 11.3774 16.5723 11.565 16.3847L17.1716 10.7781M12.2218 5.82839L17.1716 10.7781" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+<a href="{{url_for('user')}}">
+            <div>Edit Profile</div>
+          </a></li>
+              <li class="nav-link">
+<?xml version="1.0" encoding="UTF-8"?><svg width="24px" height="24px" viewBox="0 0 24 24" stroke-width="1.5" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M13 21H5C3.89543 21 3 20.1046 3 19V10H21V13M15 4V2M15 4V6M15 4H10.5" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M3 10V6C3 4.89543 3.89543 4 5 4H7" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M7 2V6" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M21 10V6C21 4.89543 20.1046 4 19 4H18.5" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M14.9922 18H17.9922M21 18H17.9922M17.9922 18V15M17.9922 18V21" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+            <a href="{{url_for('schedule', week=week)}}">Edit Availability</a></li>
+              <li class="nav-link">
+<?xml version="1.0" encoding="UTF-8"?><svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" color="#000000"><path d="M12 12H19M19 12L16 15M19 12L16 9" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path><path d="M19 6V5C19 3.89543 18.1046 3 17 3H7C5.89543 3 5 3.89543 5 5V19C5 20.1046 5.89543 21 7 21H17C18.1046 21 19 20.1046 19 19V18" stroke="#000000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+
+            <a href={{url_for("logout")}}>Logout</a></li>
             </ul>
+
         </nav>
-    {% block content %}
+        {% block content %}
 
-    {% endblock %}
-
-
-</div>
+        {% endblock %}
+    </div>
 </body>
 </html>
