@@ -1,194 +1,104 @@
 {% extends "user_template.html" %}
 {% block head %}
-<style>
-
-
-
-.scheduleContainer {
-  display:grid;
-  grid-template-areas: "empty toprow" "content content";
-
-}
-
-
-
-.day {
-  width: auto;
-  background-color: #f1f1f1;
-  padding:1vw
-}
-
-.times {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.time-slot{
-  width:auto;
-  display:flex;
-  flex-direction:column;
-  border-top: 1px solid black;
-}
-
-.day-schedule{
-
-  display: grid;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-
-}
-
-
-
-.content{
-  grid-area: content;
-  display:grid;
-  grid-template-columns: repeat(6, 1fr);
-  grid-auto-flow: row;
-  grid-row-gap: .5em;
-  grid-column-gap: 1em;
-
-}
-
-.week-nav{
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: space-around;
-}
-
-.Folding{
-  background-color: #738adb
-}
-
-.Loading{
-  background-color: #db738a
-}
-
-.name-slot{
-  display:flex;
-  flex-direction:row;
-  justify-content:space-between;
-  align-items:center;
-  padding:0.5vw;
-  border-radius: 0.5vw;
-  margin:0.5vw;
-  overflow:hidden;
-}
-
-.name-slot .name{
-  margin-right:0.5vw;
-  width:90%;
-  height:100%;
-
-}
-.name-slot .colour{
-  width:10%;
-  height:100%
-}
-.user {
-  flex-grow: 1;
-}
-
-</style>
-
-<script>
-  const CONSTANTS = {{ constants|tojson }};
-  const AVAILABILITY = {{ schedule["availability"]|tojson }};
-  const USERS = {{ users|tojson }};
-
-  function addTimeColumn(item){
-    const content = document.getElementById("content");
-    const timeColumn = document.createElement("div");
-    timeColumn.classList.add("time-column");
-    timeColumn.innerText = item;
-    content.appendChild(timeColumn);
-    console.log("Hello")
-  }
-
-  function get_user(name){
-    for (let user of USERS){
-      if (user["username"] === name){
-        return user;
-      }
-    }
-  }
-
-  window.onload = function(){ 
-    const content = document.getElementById("content");
-
-    addTimeColumn("")
-    for (let day of CONSTANTS.days){
-      const dayColumn = document.createElement("div");
-      dayColumn.classList.add("time-slot");
-      dayColumn.innerText = day;
-      content.appendChild(dayColumn);
-    }
-    for (let i=9; i<20; i++){
-      for (let j=0; j<2; j++){
-        const time = i + ":" + j*3 + "0";
-        addTimeColumn(time);
-        for (let day of CONSTANTS.days){
-          const timeSlot = document.createElement("div");
-          timeSlot.classList.add("time-slot");
-          console.log("time slot")
-          
-          for (let person of AVAILABILITY){
-            data = []
-            Object.entries(person).forEach(element => {
-              data.push(element)
-            })
-            const name = data[0][0];
-            const availability = data[0][1];
-            if (availability[day] !== undefined && availability[day].includes(time)){
-              const current = get_user(name);
-              const nameSlot = document.createElement("div");
-              nameSlot.classList.add("name-slot");
-              const nameDiv = document.createElement("div");
-              nameDiv.classList.add("name");
-              nameDiv.innerText = name;
-              nameDiv.classList.add(current["team"]);
-              const colourDiv = document.createElement("div");
-              colourDiv.classList.add("colour");
-              colourDiv.style.backgroundColor = current["colour"];
-              nameSlot.appendChild(nameDiv);
-              nameSlot.appendChild(colourDiv);
-              timeSlot.appendChild(nameSlot);
-            }
-
-          
-        }
-        content.appendChild(timeSlot);
-          console.log("Append")
-      }
-    }
-  }
-}
-
-</script>
+<link rel="stylesheet" type="text/css" href="../static/schedule.css">
 {% endblock %}
-{% block title %} Dashboard {% endblock title %}
+
+{% block title %}
+    Schedule
+{% endblock %}
 
 {% block content %}
-
-
-<main class="user">
-  <h2>{{user["username"]}}</h2>
-  <h1>Schedule for {{constants.titles[week]}} ({{constants.dates[week]}})</h1>
-
-  <div class = "scheduleContainer">
-    <div style="grid-area:empty"></div>
-    <div class="toprow">
-      <div> </div>
-
+    <div id="cal">
+      <div class="time-col">
+        <div class="time"> 9 </div>
+        <div class="time"> 10 </div>
+        <div class="time"> 11 </div>
+        <div class="time"> 12 </div>
+        <div class="time"> 13 </div>
+        <div class="time"> 14 </div>
+        <div class="time"> 15 </div>
+        <div class="time"> 16 </div>
+        <div class="time"> 17 </div>
+        <div class="time"> 18 </div>
+        <div class="time"> 19 </div>
+        <div class="time"> 20 </div>
+      </div>
+      <div class="cal-col">
+        <div class="cal-day"><button class="day">Mon</button></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+      </div>
+      <div class="cal-col">
+        <div class="cal-day"><button class="day">Tue</button></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+      </div>
+      <div class="cal-col">
+        <div class="cal-day"><button class="day">Wed</button></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+      </div>
+      <div class="cal-col">
+        <div class="cal-day"><button class="day">Thu</button></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+      </div>
+      <div class="cal-col">
+        <div class="cal-day"><button class="day">Fri</button></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+        <div class="cal-cell"></div>
+      </div>
     </div>
-    <div class="content" id="content">
-    </div>
-  </div>
-</main>
-
-
+    <input type="time" id="time-test" />
+    <button id="time-button">click</button>
+    <script>
+        window.week = {{week}};
+        window.name = `{{name}}`;
+        </script>
+    <script src="{{url_for('static',filename='schedule.js')}}"></script>
 {% endblock %}

@@ -1,0 +1,76 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Inter, sans-serif;
+}
+
+
+#cal {
+  display: grid;
+  grid-template-columns: 50px repeat(5, 150px);
+  width: 100%;
+}
+
+.cal-col {
+  position: relative;
+  display: grid;
+  grid-template-rows: repeat(12, 100px);
+}
+
+.cal-cell {
+  border-bottom: 0.5px solid #aaa;
+  border-right: 0.5px solid #aaa;
+}
+
+.event-col {
+  position: absolute;
+  top: 9%;
+  left: 50%;
+  translate: -50%;
+  width: 93%;
+  height: 27.5%;
+  background-color: #d1d1d1;
+  box-shadow: 0 0 1.5px 0 #aaa;
+  border-radius: 5px;
+}
+
+.time-col {
+  display: grid;
+  grid-template-rows: repeat(12, 100px);
+  text-align: right;
+  padding-right: 5px;
+  color: #999;
+  font-weight: 200;
+  font-size: 0.8em;
+}
+
+.day {
+  width: 80%;
+  height: 80%;
+  background-color: #f1f1f1;
+  border: none;
+  cursor: pointer;
+  margin: 0 auto 0 auto;
+  border-radius: 5px;
+}
+
+.cal-day {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.time {
+  translate: 0 93%;
+}

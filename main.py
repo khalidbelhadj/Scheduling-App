@@ -142,7 +142,8 @@ def dashboard(week=-1):
 
     if 'username' in session:
         name, user = get_user_and_name(users)
-        return render_template('schedule.html', user=user, schedule=schedule[week], constants = constants, week=week, users=users,get_user=get_user)
+        print(name)
+        return render_template('schedule.html', user=user, schedule=schedule[week], constants = constants, week=week, users=users,get_user=get_user, name = name)
     else:
         return redirect(url_for('login'))
 
@@ -155,7 +156,6 @@ def schedule(week):
         schedule = cur.fetchone()[0]
     except:
         schedule = [{"date": date, "title": title, "availability": []} for date, title in zip(dates, titles)]
-
     if not schedule:
         schedule = [{"date": date, "title": title, "availability": []} for date, title in zip(dates, titles)]
 
@@ -284,5 +284,5 @@ if __name__ == '__main__':
 
         conn.commit()
 
-    app.run(debug=True, port=8080)
+    app.run(debug=True, port=8081)
 
